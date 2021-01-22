@@ -1,0 +1,92 @@
+const express = require('express');
+const app = express();
+const fs = require('fs');
+
+// gets all the products
+app.get("/products", (request,response) => {
+
+    fs.readFile(__dirname + "/public/" + "product.json" ,'utf-8',(err,data) => {
+        console.log("Data:",data);
+        response.end(data);
+    })
+});
+
+// gets by id
+app.get("/products/:id", (request,response) => {
+    fs.readFile(__dirname + "/public/" + "product.json" ,'utf-8',(err,data) => {
+
+          let product = JSON.parse(data);  
+      //  console.log("Product:",product);
+   
+        let getProductById = product['products'].find((p)=>{ return p.pid == request.params.id});
+
+      //  console.log("Data:",getProductById);
+        response.end(JSON.stringify(getProductById));
+    })
+});
+
+// deletes the particular product
+app.delete("/products/:id" , (request,response) => {
+    fs.readFile(__dirname + "/public/" + "product.json" ,'utf-8',(err,data) => {
+        let productDelete = JSON.parse(data); 
+        // let getDelete = delete productDelete['products'].find((p)=>{ return p.pid == request.params.id});
+
+        let allProducts = productDelete['products'];
+        for (let i =0;i<allProducts.length;i++){
+
+            if(allProducts[i].pid == request.params.id){
+                delete allProducts[i];
+            }
+        }
+
+        console.log("Delete:",allProducts);
+        response.end(JSON.stringify(allProducts));
+    })
+});
+
+// post
+app.post("/products" , (request,response) => {
+    fs.readFile(__dirname + "/public/" + "product.json" ,'utf-8',(err,data) => {
+
+        let productPost = JSON.parse(data); 
+        console.log(productPost);
+
+        productPost['products'].push({ 
+            pid:3,
+            pname:"Akshar",
+            price:30,
+
+        });
+        response.end(JSON.stringify(productPost));
+    })
+});
+
+// put
+app.put("/products/:id" , (request,response) => {
+
+    var product_name = "keyboard";
+    var product_price = 1000;
+
+    fs.readFile(__dirname + "/public/" + "product.json" ,'utf-8',(err,data) => {
+        let productPost = JSON.parse(data); 
+          
+            console.log(productPost);
+      
+        let getPut = productPost['products'].find((p)=>{ 
+
+            if( p.pid == request.params.id){  
+                       
+                p.pname = product_name;
+                p.price = product_price;
+                console.log("Data Updated");
+                return p;
+            }
+        });
+        response.end(JSON.stringify(getPut));
+    })
+});
+
+
+app.listen(1000,() => {
+    console.log("Listening to port 1000");
+});

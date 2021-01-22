@@ -1,0 +1,15 @@
+{
+    "products" : [
+        {
+            "pid": 1,
+            "pname": "Shampooo",
+            "price": 102
+        },
+        {
+            "pid": 2,
+            "pname": "Conditioner",
+            "price": 789
+        }
+    ]
+}
+
